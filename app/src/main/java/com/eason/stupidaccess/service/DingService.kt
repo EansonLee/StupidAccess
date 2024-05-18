@@ -1,10 +1,9 @@
-package com.example.service
+package com.eason.stupidaccess.service
 
 import android.accessibilityservice.AccessibilityService
 import android.content.Intent
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
-import com.example.runapp.ding.DingActivity
 
 /**
  * show me the fxxking code
@@ -27,11 +26,11 @@ class DingService : AccessibilityService() {
 
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        Log.d(DingActivity.TAG, "onAccessibilityEvent: ${event?.eventType}")
+//        Log.d(DingActivity.TAG, "onAccessibilityEvent: ${event?.eventType}")
     }
 
     override fun onInterrupt() {
-        Log.d(DingActivity.TAG, "onInterrupt")
+//        Log.d(DingActivity.TAG, "onInterrupt")
     }
 
     override fun onUnbind(intent: Intent?): Boolean {

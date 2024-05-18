@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -50,7 +51,11 @@ public class AccessibilityServiceMonitor extends AccessibilityService {
      */
     private boolean isWeChatMotionEnable = true;
 
+
+    //是否已点击登录
     private boolean mHadChecked = false;
+    //是否已点击密码
+    private boolean mHadPwd = false;
 
     private H mHandle = new H();
     private static final int MSG_DELAY_ENTER_FOREST = 0;
@@ -147,6 +152,61 @@ public class AccessibilityServiceMonitor extends AccessibilityService {
                 btnNodeList.get(0).performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 Log.d(Config.TAG, "点击按钮");
                 mHadChecked = true;
+            }
+        }
+
+        //弹出底部弹框
+        if (eventType == AccessibilityEvent.TYPE_VIEW_SCROLLED && className.equals("androidx.recyclerview.widget.RecyclerView")) {
+            List<AccessibilityNodeInfo> pwdNodeList = event.getSource().findAccessibilityNodeInfosByViewId("com.alibaba.android.rimet:id/factor_list_view");
+            if (!pwdNodeList.isEmpty()) {
+                int count = pwdNodeList.get(0).getChildCount();
+                Log.w(Config.DEBUG_TAG, "count：" + count);
+                for(int i = 0; i < count; i++) {
+                    AccessibilityNodeInfo child = pwdNodeList.get(0).getChild(i);
+                    Log.w(Config.DEBUG_TAG, "child：" + child);
+                    // 有时 child 为空
+                    if (child != null && i == 2) {
+                        child.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    }else if (child != null && i == 0) {
+                        child.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    }
+                }
+                Log.d(Config.DEBUG_TAG, "点击密码登录");
+//                mHadPwd = true;
+            }else {
+                Log.e(Config.TAG, "密码节点为null");
+            }
+        }
+
+        //进入密码页面
+        if (eventType == AccessibilityEvent.TYPE_VIEW_FOCUSED && className.equals("android.widget.EditText")) {
+                Log.d(Config.TAG, "输入密码");
+                Bundle arguments = new Bundle();
+                arguments.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, "");
+                event.getSource().performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments);
+//                mHadPwd = true;
+        }
+
+        //进入登录页
+        if (eventType == AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED) {
+            Log.d(Config.TAG, "点击登录");
+            List<AccessibilityNodeInfo> loginNodeList =  getRootInActiveWindow().findAccessibilityNodeInfosByText("登录");
+            if (!loginNodeList.isEmpty()) {
+                AccessibilityNodeInfo btn = loginNodeList.get(0);
+                String text = btn.getText().toString();
+                Log.w(Config.DEBUG_TAG, "进入登录："+ text);
+                if (btn.isClickable()) {
+                    Log.w(Config.DEBUG_TAG, "登录按钮可以点击");
+                }else {
+                    Log.w(Config.DEBUG_TAG, "登录按钮不可点击");
+//                    btn.setClickable(true);
+                    btn.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    Log.w(Config.DEBUG_TAG, "强制点击");
+                }
+
+
+            }else {
+                Log.w(Config.DEBUG_TAG, "登录节点为null");
             }
         }
     }

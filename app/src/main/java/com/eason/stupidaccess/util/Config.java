@@ -2,6 +2,7 @@ package com.eason.stupidaccess.util;
 
 public class Config {
     public static final String TAG = "eason";
+    public static final String DEBUG_TAG = "=====";
 
     public static final String APP_KEEP = "keep_app";
 

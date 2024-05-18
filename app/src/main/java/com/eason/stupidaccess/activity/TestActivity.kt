@@ -10,7 +10,9 @@ import com.eason.stupidaccess.service.AlipayForestMonitor
 
 class TestActivity : AppCompatActivity() {
 
-    private val binding = ActivityTestBinding.inflate(layoutInflater)
+    private val binding by lazy {
+        ActivityTestBinding.inflate(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
