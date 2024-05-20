@@ -102,28 +102,44 @@ public class AlipayForestMonitor {
                     continue;
                 }
 
-                //Log.d(TAG, "findEveryViewNode = " + child.toString());
+                Log.d(Config.DEBUG_TAG, "findEveryViewNode = " + child);
+                Log.d(Config.DEBUG_TAG, "findEveryViewNode count= " + child.getChildCount());
+//                String className = child.getClassName().toString();
+//                if ("android.widget.TextView".equals(className)) {
+//                    Log.d(Config.DEBUG_TAG, "Text 的节点数据 text = " + child.getText() + ", descript = " + child.getContentDescription() + ", className = " + child.getClassName() + ", resId = " + child.getViewIdResourceName());
+//
+//                    boolean isClickable = child.isClickable();
+//                    boolean isResIdNull = child.getViewIdResourceName() == null ? true : false;
+//
+//                    /**
+//                     * 好友的能量不能收取，因为支付宝在onTouch事件中return true,导致不会触发OnClick方法
+//                     *
+//                     * 但是支付宝中的蚂蚁森林可以收取自己的能量
+//                     */
+//                    if (isClickable && isResIdNull && child.getText() != null && child.getText().toString().contains("考勤打卡")) {
+//                        child.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+//                        Log.d(Config.DEBUG_TAG, "考勤打卡 成功点击");
+//                    }
 
-                String className = child.getClassName().toString();
-                if ("android.widget.Button".equals(className)) {
-                    Log.d(Config.TAG, "Button 的节点数据 text = " + child.getText() + ", descript = " + child.getContentDescription() + ", className = " + child.getClassName() + ", resId = " + child.getViewIdResourceName());
-
-                    boolean isClickable = child.isClickable();
-                    boolean isResIdNull = child.getViewIdResourceName() == null ? true : false;
-
-                    /**
-                     * 好友的能量不能收取，因为支付宝在onTouch事件中return true,导致不会触发OnClick方法
-                     *
-                     * 但是支付宝中的蚂蚁森林可以收取自己的能量
-                     */
-                    if (isClickable && isResIdNull) {
-                        child.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                        Log.d(Config.TAG, "能量球 成功点击");
+//                if (!child.findAccessibilityNodeInfosByText("考勤打卡").isEmpty()) {
+//                    Log.w(Config.DEBUG_TAG, "child web count："+child.getChildCount());
+                    for (int k = 0; k < child.getChildCount(); k++) {
+                        Log.w(Config.DEBUG_TAG, "child web："+child.getChild(k).getChildCount());
+                        AccessibilityNodeInfo childNode = child.getChild(k);
+                        if (childNode.getText().equals("考勤打卡")) {
+                            if (childNode.isClickable()) {
+                                childNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                Log.d(Config.DEBUG_TAG, "考勤打卡 成功点击");
+                            }else {
+                                childNode.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                Log.d(Config.DEBUG_TAG, "考勤打卡 成功点击");
+                            }
+                        }
                     }
-                }
+//                }
 
                 // 递归调用
-                findEveryViewNode(child);
+//                findEveryViewNode(child);
             }
         }
     }

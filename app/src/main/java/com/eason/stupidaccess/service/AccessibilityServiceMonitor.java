@@ -57,6 +57,12 @@ public class AccessibilityServiceMonitor extends AccessibilityService {
     //是否已点击密码
     private boolean mHadPwd = false;
 
+    //是否已点击工作台
+    private boolean mHadWork = false;
+
+    //是否已点击考勤打卡
+    private boolean mHadCard = false;
+
     private H mHandle = new H();
     private static final int MSG_DELAY_ENTER_FOREST = 0;
     private static final int MSG_DELAY_ENTER_LIANGTONG = 1;
@@ -119,10 +125,6 @@ public class AccessibilityServiceMonitor extends AccessibilityService {
         String className = event.getClassName().toString();
         Log.d(Config.TAG, "packageName = " + packageName + ", className = " + className);
 
-//       for(int i =0; i < event.getSource().getChildCount(); i++) {
-//           Log.e("bbbbbbbbbbbbbb", "className："+event.getSource().getChild(i).getClassName().toString()
-//                   +"getViewIdResourceName："+event.getSource().getChild(i).getViewIdResourceName());
-//       }
 //        switch (eventType) {
 //            case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:
 ////            case AccessibilityEvent.TYPE_VIEW_SCROLLED:
@@ -157,6 +159,9 @@ public class AccessibilityServiceMonitor extends AccessibilityService {
 
         //弹出底部弹框
         if (eventType == AccessibilityEvent.TYPE_VIEW_SCROLLED && className.equals("androidx.recyclerview.widget.RecyclerView")) {
+            if(event.getSource() == null) {
+                return;
+            }
             List<AccessibilityNodeInfo> pwdNodeList = event.getSource().findAccessibilityNodeInfosByViewId("com.alibaba.android.rimet:id/factor_list_view");
             if (!pwdNodeList.isEmpty()) {
                 int count = pwdNodeList.get(0).getChildCount();
@@ -165,9 +170,9 @@ public class AccessibilityServiceMonitor extends AccessibilityService {
                     AccessibilityNodeInfo child = pwdNodeList.get(0).getChild(i);
                     Log.w(Config.DEBUG_TAG, "child：" + child);
                     // 有时 child 为空
-                    if (child != null && i == 2) {
+                    if (child != null && count > 1 && i == 2) {
                         child.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                    }else if (child != null && i == 0) {
+                    }else if (child != null && count == 1) {
                         child.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                     }
                 }
@@ -182,7 +187,10 @@ public class AccessibilityServiceMonitor extends AccessibilityService {
         if (eventType == AccessibilityEvent.TYPE_VIEW_FOCUSED && className.equals("android.widget.EditText")) {
                 Log.d(Config.TAG, "输入密码");
                 Bundle arguments = new Bundle();
-                arguments.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, "");
+                arguments.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, "080442lyz");
+                if(event.getSource() == null) {
+                    return;
+                }
                 event.getSource().performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments);
 //                mHadPwd = true;
         }
@@ -196,17 +204,53 @@ public class AccessibilityServiceMonitor extends AccessibilityService {
                 String text = btn.getText().toString();
                 Log.w(Config.DEBUG_TAG, "进入登录："+ text);
                 if (btn.isClickable()) {
+                    btn.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                     Log.w(Config.DEBUG_TAG, "登录按钮可以点击");
                 }else {
                     Log.w(Config.DEBUG_TAG, "登录按钮不可点击");
-//                    btn.setClickable(true);
                     btn.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
                     Log.w(Config.DEBUG_TAG, "强制点击");
                 }
-
-
             }else {
                 Log.w(Config.DEBUG_TAG, "登录节点为null");
+            }
+        }
+
+        if (!getRootInActiveWindow().findAccessibilityNodeInfosByText("工作台").isEmpty() && !mHadWork) {
+            Log.w(Config.DEBUG_TAG, "进入工作台");
+            if(event.getSource() == null) {
+                return;
+            }
+            AccessibilityNodeInfo nodeWork = getRootInActiveWindow().findAccessibilityNodeInfosByText("工作台").get(0);
+            if (nodeWork != null) {
+                Log.w(Config.DEBUG_TAG, nodeWork.getText().toString());
+                if (nodeWork.isClickable()) {
+                    nodeWork.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    Log.w(Config.DEBUG_TAG, "点击工作台");
+                }else {
+                    Log.w(Config.DEBUG_TAG, "工作台不可点击");
+                    nodeWork.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                }
+                mHadWork = true;
+            }
+        }
+
+        List<AccessibilityNodeInfo> cardNodes = getRootInActiveWindow().findAccessibilityNodeInfosByViewId("com.alibaba.android.rimet:id/h5_pc_container");
+        if (!cardNodes.isEmpty()) {
+            Log.e(Config.DEBUG_TAG, "工作台cardNodes：" + cardNodes.size());
+            AccessibilityNodeInfo nodeInfo = cardNodes.get(0);
+            if (nodeInfo != null) {
+                for (int i = 0; i < nodeInfo.getChildCount(); i++) {
+                    AccessibilityNodeInfo child = nodeInfo.getChild(i);
+                    if ("com.uc.aosp.android.webkit.n0".equals(child.getClassName())) {
+                        Log.d(Config.DEBUG_TAG, "工作台 webView count = " + child.getChildCount());
+
+                        AlipayForestMonitor.findEveryViewNode(child);
+                        break;
+                    }
+                }
+            } else {
+                Log.d(Config.DEBUG_TAG, "alipayPolicy = null");
             }
         }
     }
