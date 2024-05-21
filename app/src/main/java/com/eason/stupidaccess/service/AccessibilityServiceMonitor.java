@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,6 +16,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.eason.stupidaccess.AccessApp;
+import com.eason.stupidaccess.util.AccessibilityHelper;
 import com.eason.stupidaccess.util.Config;
 import com.eason.stupidaccess.util.DateTimeUtil;
 import com.eason.stupidaccess.util.ShareUtil;
@@ -70,6 +72,8 @@ public class AccessibilityServiceMonitor extends AccessibilityService {
 
     private MyBroadCast myBroadCast;
 
+    private AccessibilityHelper accessibilityHelper;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -108,6 +112,7 @@ public class AccessibilityServiceMonitor extends AccessibilityService {
         serviceInfo.notificationTimeout = 100;
         serviceInfo.flags = serviceInfo.flags | AccessibilityServiceInfo.FLAG_REQUEST_ENHANCED_WEB_ACCESSIBILITY;
         setServiceInfo(serviceInfo);
+        accessibilityHelper = new AccessibilityHelper(this);
     }
 
     @Override
@@ -229,7 +234,10 @@ public class AccessibilityServiceMonitor extends AccessibilityService {
                     Log.w(Config.DEBUG_TAG, "点击工作台");
                 }else {
                     Log.w(Config.DEBUG_TAG, "工作台不可点击");
-                    nodeWork.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+//                    nodeWork.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        accessibilityHelper.click(546, 2356);
+                    }
                 }
                 mHadWork = true;
             }
@@ -242,10 +250,13 @@ public class AccessibilityServiceMonitor extends AccessibilityService {
             if (nodeInfo != null) {
                 for (int i = 0; i < nodeInfo.getChildCount(); i++) {
                     AccessibilityNodeInfo child = nodeInfo.getChild(i);
-                    if ("com.uc.aosp.android.webkit.n0".equals(child.getClassName())) {
-                        Log.d(Config.DEBUG_TAG, "工作台 webView count = " + child.getChildCount());
-
-                        AlipayForestMonitor.findEveryViewNode(child);
+                    Log.w(Config.DEBUG_TAG, "工作台 child = " + child.toString());
+                    if ("com.uc.webview.export.WebView".equals(child.getClassName())) {
+//                        for (int j = 0; j < child.getChildCount(); j++) {
+//                            Log.d(Config.DEBUG_TAG, "工作台 webView  = " + child.getChild(j).toString());
+//                        }
+//                        AlipayForestMonitor.findEveryViewNode(child);
+                        accessibilityHelper.click(103, 1094);
                         break;
                     }
                 }
