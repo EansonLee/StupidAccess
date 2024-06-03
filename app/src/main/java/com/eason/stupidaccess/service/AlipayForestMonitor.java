@@ -21,6 +21,7 @@ public class AlipayForestMonitor {
         Intent intent = new Intent();
         intent.setPackage("com.alibaba.android.rimet");
         intent.setClassName("com.alibaba.android.rimet", "com.alibaba.android.rimet.biz.LaunchHomeActivity");
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         mContext.startActivity(intent);
     }
 

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <Button
+            android:id="@+id/btn_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/settings" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/time_settings"
+            android:textSize="26sp" />
+
+        <TimePicker
+            android:id="@+id/timepick"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:timePickerMode="spinner">
+
+        </TimePicker>
+
+        <Switch
+            android:id="@+id/sw_alipay_forest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/alipay_forest_title" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/et_item_x"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_weight="1"
+                android:hint="请输入打卡item x 坐标"
+                android:inputType="number"
+                android:textSize="@dimen/base_dp_16" />
+
+            <EditText
+                android:id="@+id/et_item_y"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:hint="请输入打卡item y 坐标"
+                android:inputType="number"
+                android:textSize="@dimen/base_dp_16" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/base_dp_8"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/base_dp_20"
+                android:layout_height="@dimen/base_dp_20"
+                android:src="@mipmap/icon_help" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/base_dp_8"
+                android:text="工作台，考勤打卡的item x y 坐标"
+                android:textColor="#999999"
+                android:textSize="@dimen/base_dp_12" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/et_card_x"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_weight="1"
+                android:hint="请输入点击打卡 x 坐标"
+                android:inputType="number"
+                android:textSize="@dimen/base_dp_16" />
+
+            <EditText
+                android:id="@+id/et_card_y"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:hint="请输入点击打卡 y 坐标"
+                android:inputType="number"
+                android:textSize="@dimen/base_dp_16" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/base_dp_8"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/base_dp_20"
+                android:layout_height="@dimen/base_dp_20"
+                android:src="@mipmap/icon_help" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="打卡图标 x y 坐标"
+                android:textColor="#999999"
+                android:textSize="@dimen/base_dp_12" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+        <!--        <Switch-->
+        <!--            android:id="@+id/sw_keep"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="@string/keep_title" />-->
+
+        <!--        <Switch-->
+        <!--            android:id="@+id/sw_liangtong"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="@string/liangtong_title" />-->
+
+        <!--        <Switch-->
+        <!--            android:id="@+id/sw_wechart_motion"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="@string/wechat_motion_title" />-->
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/tv_readme"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="@string/readme" />-->
+
+        <EditText
+            android:id="@+id/et_pwd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:hint="请输入登录密码"
+            android:inputType="textPassword"
+            android:textSize="@dimen/base_dp_16" />
+
+        <Button
+            android:id="@+id/btn_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="保存启动源计划" />
+    </LinearLayout>
+
+</ScrollView>
