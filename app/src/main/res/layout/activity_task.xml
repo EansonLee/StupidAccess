@@ -169,6 +169,16 @@
             android:inputType="textPassword"
             android:textSize="@dimen/base_dp_16" />
 
+        <EditText
+            android:id="@+id/et_delay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:hint="请输入自定义延时时间(1s = 1000ms)"
+            android:inputType="textPassword"
+            android:textSize="@dimen/base_dp_16" />
+
+
         <Button
             android:id="@+id/btn_start"
             android:layout_width="wrap_content"

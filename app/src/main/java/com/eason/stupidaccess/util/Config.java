@@ -29,4 +29,6 @@ public class Config {
     public static final String KEY_CARD_Y = "key_card_y";
 
     public static final String KEY_STATE = "key_state";
+
+    public static final String KEY_DELAY = "key_delay";
 }

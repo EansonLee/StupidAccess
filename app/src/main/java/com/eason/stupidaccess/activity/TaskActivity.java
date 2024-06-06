@@ -41,6 +41,7 @@ public class TaskActivity extends AppCompatActivity implements View.OnClickListe
     private EditText etCardX;
     private EditText etCardY;
     private EditText etPwd;
+    private EditText etDelay;
 
     public static int SERVICE_STATUS_ON = 100;
 
@@ -85,6 +86,7 @@ public class TaskActivity extends AppCompatActivity implements View.OnClickListe
         etCardX = findViewById(R.id.et_card_x);
         etCardY = findViewById(R.id.et_card_y);
         etPwd = findViewById(R.id.et_pwd);
+        etDelay = findViewById(R.id.et_delay);
     }
 
     private void initVaule() {
@@ -98,6 +100,7 @@ public class TaskActivity extends AppCompatActivity implements View.OnClickListe
         etCardX.setText(String.valueOf(mShareUtil.getInt(Config.KEY_CARD_X, 0)));
         etCardY.setText(String.valueOf(mShareUtil.getInt(Config.KEY_CARD_Y, 0)));
         etPwd.setText(mShareUtil.getString(Config.KEY_PWD, ""));
+        etDelay.setText(String.valueOf(mShareUtil.getInt(Config.KEY_CARD_Y, 0)));
     }
 
     private void initListener() {
@@ -135,6 +138,7 @@ public class TaskActivity extends AppCompatActivity implements View.OnClickListe
                 mShareUtil.setShare(Config.KEY_ITEM_Y, Integer.parseInt(etItemY.getText().toString()));
                 mShareUtil.setShare(Config.KEY_CARD_X, Integer.parseInt(etCardX.getText().toString()));
                 mShareUtil.setShare(Config.KEY_CARD_Y, Integer.parseInt(etCardY.getText().toString()));
+                mShareUtil.setShare(Config.KEY_DELAY, Integer.parseInt(etDelay.getText().toString()));
                 startService();
                 break;
         }
