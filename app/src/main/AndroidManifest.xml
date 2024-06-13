@@ -3,9 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.eason.stupidaccess">
 
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
 
     <application
         android:name=".AccessApp"
@@ -20,6 +23,7 @@
 
         <activity
             android:name=".activity.LaunchActivity"
+            android:excludeFromRecents="true"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,6 +34,7 @@
 
         <activity
             android:name=".activity.TaskActivity"
+            android:excludeFromRecents="true"
             android:screenOrientation="portrait" />
 
         <service

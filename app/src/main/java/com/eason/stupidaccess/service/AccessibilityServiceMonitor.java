@@ -263,7 +263,7 @@ public class AccessibilityServiceMonitor extends AccessibilityService {
                         Log.w(Config.DEBUG_TAG, "工作台 child = " + child.toString());
                         if ("com.uc.webview.export.WebView".equals(child.getClassName())) {
                             if (mShareUtil == null) return;
-                            int delay = mShareUtil.getInt(Config.KEY_DELAY, 7000);
+                            int delay = mShareUtil.getInt(Config.KEY_DELAY, 15000);
                             Log.d(Config.DEBUG_TAG, "点击打卡item");
                             accessibilityHelper.click(mShareUtil.getInt(Config.KEY_ITEM_X, 140), mShareUtil.getInt(Config.KEY_ITEM_Y, 1094));
                             ThreadUtils.runOnUiThreadDelayed(new Runnable() {
