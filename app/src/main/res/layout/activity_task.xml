@@ -175,7 +175,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:hint="请输入自定义延时时间(1s = 1000ms)"
-            android:inputType="textPassword"
+            android:inputType="number"
             android:textSize="@dimen/base_dp_16" />
 
 
