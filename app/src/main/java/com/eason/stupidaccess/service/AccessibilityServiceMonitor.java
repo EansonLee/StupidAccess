@@ -20,6 +20,7 @@ import androidx.lifecycle.LiveDataKt;
 
 import com.blankj.utilcode.util.ThreadUtils;
 import com.eason.stupidaccess.AccessApp;
+import com.eason.stupidaccess.AccessConfig;
 import com.eason.stupidaccess.activity.TaskActivity;
 import com.eason.stupidaccess.util.AccessibilityHelper;
 import com.eason.stupidaccess.util.Config;
@@ -28,6 +29,9 @@ import com.eason.stupidaccess.util.LiveDataBus;
 import com.eason.stupidaccess.util.ShareUtil;
 
 import java.util.List;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 
 
 public class AccessibilityServiceMonitor extends AccessibilityService {
@@ -230,29 +234,23 @@ public class AccessibilityServiceMonitor extends AccessibilityService {
                         btn.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         Log.w(Config.DEBUG_TAG, "强制点击");
                     }
+                    AccessConfig.INSTANCE.setHAD_SHOW_MAIN(true);
                 } else {
                     Log.w(Config.DEBUG_TAG, "登录节点为null");
                 }
             }
 
-            if (!getRootInActiveWindow().findAccessibilityNodeInfosByText("工作台").isEmpty() && !mHadWork) {
-                Log.w(Config.DEBUG_TAG, "进入工作台");
-                if (event.getSource() == null) {
-                    return;
-                }
-                AccessibilityNodeInfo nodeWork = getRootInActiveWindow().findAccessibilityNodeInfosByText("工作台").get(0);
-                if (nodeWork != null) {
-                    Log.w(Config.DEBUG_TAG, nodeWork.getText().toString());
-                    if (nodeWork.isClickable()) {
-                        nodeWork.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                        Log.w(Config.DEBUG_TAG, "点击工作台");
-                    } else {
-                        Log.w(Config.DEBUG_TAG, "工作台不可点击");
-                        nodeWork.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+            //工作台循环任务
+            if (AccessConfig.INSTANCE.getHAD_SHOW_MAIN()) {
+                AccessConfig.INSTANCE.loopRun(3_000, 3, new Function0<Unit>() {
+                    @Override
+                    public Unit invoke() {
+                        clickDeskTop(event);
+                        return null;
                     }
-                    mHadWork = true;
-                }
+                });
             }
+
             List<AccessibilityNodeInfo> cardNodes = getRootInActiveWindow().findAccessibilityNodeInfosByViewId("com.alibaba.android.rimet:id/h5_pc_container");
             if (!cardNodes.isEmpty()) {
                 Log.e(Config.DEBUG_TAG, "工作台cardNodes：" + cardNodes.size());
@@ -264,14 +262,28 @@ public class AccessibilityServiceMonitor extends AccessibilityService {
                         if ("com.uc.webview.export.WebView".equals(child.getClassName())) {
                             if (mShareUtil == null) return;
                             int delay = mShareUtil.getInt(Config.KEY_DELAY, 15000);
-                            Log.d(Config.DEBUG_TAG, "点击打卡item");
-                            accessibilityHelper.click(mShareUtil.getInt(Config.KEY_ITEM_X, 140), mShareUtil.getInt(Config.KEY_ITEM_Y, 1094));
+                            //工作台页面
+                            AccessConfig.INSTANCE.loopRun(5_000, 3, new Function0<Unit>() {
+                                @Override
+                                public Unit invoke() {
+                                    Log.d(Config.DEBUG_TAG, "点击打卡item");
+                                    accessibilityHelper.click(mShareUtil.getInt(Config.KEY_ITEM_X, 140), mShareUtil.getInt(Config.KEY_ITEM_Y, 1094));
+                                    return null;
+                                }
+                            });
+
                             ThreadUtils.runOnUiThreadDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Log.d(Config.DEBUG_TAG, "点击打卡card");
-                                    accessibilityHelper.click(mShareUtil.getInt(Config.KEY_CARD_X, 568),
-                                            mShareUtil.getInt(Config.KEY_CARD_Y, 1450));
+                                    AccessConfig.INSTANCE.loopRun(5_000, 3, new Function0<Unit>() {
+                                        @Override
+                                        public Unit invoke() {
+                                            Log.d(Config.DEBUG_TAG, "点击打卡card");
+                                            accessibilityHelper.click(mShareUtil.getInt(Config.KEY_CARD_X, 568),
+                                                    mShareUtil.getInt(Config.KEY_CARD_Y, 1450));
+                                            return null;
+                                        }
+                                    });
                                 }
                             }, delay);
                             break;
@@ -282,6 +294,27 @@ public class AccessibilityServiceMonitor extends AccessibilityService {
                 }
             }
 //            }
+        }
+    }
+
+    private void clickDeskTop(AccessibilityEvent event) {
+        if (!getRootInActiveWindow().findAccessibilityNodeInfosByText("工作台").isEmpty() && !mHadWork) {
+            Log.w(Config.DEBUG_TAG, "进入工作台");
+            if (event.getSource() == null) {
+                return;
+            }
+            AccessibilityNodeInfo nodeWork = getRootInActiveWindow().findAccessibilityNodeInfosByText("工作台").get(0);
+            if (nodeWork != null) {
+                Log.w(Config.DEBUG_TAG, nodeWork.getText().toString());
+                if (nodeWork.isClickable()) {
+                    nodeWork.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    Log.w(Config.DEBUG_TAG, "点击工作台");
+                } else {
+                    Log.w(Config.DEBUG_TAG, "工作台不可点击");
+                    nodeWork.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                }
+                mHadWork = true;
+            }
         }
     }
 
