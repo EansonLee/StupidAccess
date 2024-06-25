@@ -36,6 +36,9 @@ public class TaskActivity extends AppCompatActivity implements View.OnClickListe
     private Button btnSettings;
     private Button btnStart;
 
+    private EditText etTableX;
+    private EditText etTableY;
+
     private EditText etItemX;
     private EditText etItemY;
     private EditText etCardX;
@@ -81,6 +84,8 @@ public class TaskActivity extends AppCompatActivity implements View.OnClickListe
         sw_alipay_forest = (Switch) findViewById(R.id.sw_alipay_forest);
 //        sw_wechart_motion = (Switch) findViewById(R.id.sw_wechart_motion);
         btnStart = (Button) findViewById(R.id.btn_start);
+        etTableX = findViewById(R.id.et_table_x);
+        etTableY = findViewById(R.id.et_table_y);
         etItemX = findViewById(R.id.et_item_x);
         etItemY = findViewById(R.id.et_item_y);
         etCardX = findViewById(R.id.et_card_x);
@@ -95,12 +100,14 @@ public class TaskActivity extends AppCompatActivity implements View.OnClickListe
         timepick.setIs24HourView(true);
         timepick.setDescendantFocusability(TimePicker.FOCUS_BLOCK_DESCENDANTS);
 
+        etTableX.setText(String.valueOf(mShareUtil.getInt(Config.KEY_TABLE_X, 0)));
+        etTableY.setText(String.valueOf(mShareUtil.getInt(Config.KEY_TABLE_Y, 0)));
         etItemX.setText(String.valueOf(mShareUtil.getInt(Config.KEY_ITEM_X, 0)));
         etItemY.setText(String.valueOf(mShareUtil.getInt(Config.KEY_ITEM_Y, 0)));
         etCardX.setText(String.valueOf(mShareUtil.getInt(Config.KEY_CARD_X, 0)));
         etCardY.setText(String.valueOf(mShareUtil.getInt(Config.KEY_CARD_Y, 0)));
         etPwd.setText(mShareUtil.getString(Config.KEY_PWD, ""));
-        etDelay.setText(String.valueOf(mShareUtil.getInt(Config.KEY_CARD_Y, 0)));
+        etDelay.setText(String.valueOf(mShareUtil.getInt(Config.KEY_DELAY, 0)));
     }
 
     private void initListener() {
@@ -129,7 +136,9 @@ public class TaskActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(this, "请输入密码，才能启动源计划", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (etItemX.getText().toString().isEmpty() || etItemY.getText().toString().isEmpty() || etCardX.getText().toString().isEmpty() || etCardY.getText().toString().isEmpty()) {
+                if (etTableX.getText().toString().isEmpty() || etTableY.getText().toString().isEmpty() ||
+                        etItemX.getText().toString().isEmpty() || etItemY.getText().toString().isEmpty() ||
+                        etCardX.getText().toString().isEmpty() || etCardY.getText().toString().isEmpty()) {
                     Toast.makeText(this, "请输入坐标，才能启动源计划", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -139,7 +148,10 @@ public class TaskActivity extends AppCompatActivity implements View.OnClickListe
                 mShareUtil.setShare(Config.KEY_CARD_X, Integer.parseInt(etCardX.getText().toString()));
                 mShareUtil.setShare(Config.KEY_CARD_Y, Integer.parseInt(etCardY.getText().toString()));
                 mShareUtil.setShare(Config.KEY_DELAY, Integer.parseInt(etDelay.getText().toString()));
+                mShareUtil.setShare(Config.KEY_TABLE_X, Integer.parseInt(etTableX.getText().toString()));
+                mShareUtil.setShare(Config.KEY_TABLE_Y, Integer.parseInt(etTableY.getText().toString()));
                 startService();
+                Toast.makeText(this, "配置已保存", Toast.LENGTH_SHORT).show();
                 break;
         }
     }

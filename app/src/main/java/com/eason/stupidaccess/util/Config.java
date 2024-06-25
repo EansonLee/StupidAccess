@@ -31,4 +31,8 @@ public class Config {
     public static final String KEY_STATE = "key_state";
 
     public static final String KEY_DELAY = "key_delay";
+
+    public static final String KEY_TABLE_X = "key_table_x";
+
+    public static final String KEY_TABLE_Y = "key_table_y";
 }

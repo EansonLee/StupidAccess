@@ -144,6 +144,8 @@ public class AccessibilityServiceMonitor extends AccessibilityService {
         String packageName = event.getPackageName().toString();
         String className = event.getClassName().toString();
         Log.d(Config.TAG, "packageName = " + packageName + ", className = " + className);
+        if (mShareUtil == null) return;
+        int delay = mShareUtil.getInt(Config.KEY_DELAY, 8_000);
 
 //        switch (eventType) {
 //            case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:
@@ -234,71 +236,53 @@ public class AccessibilityServiceMonitor extends AccessibilityService {
                         btn.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         Log.w(Config.DEBUG_TAG, "强制点击");
                     }
+                    clickTable(delay);
                     AccessConfig.INSTANCE.setHAD_SHOW_MAIN(true);
                 } else {
                     Log.w(Config.DEBUG_TAG, "登录节点为null");
                 }
             }
-
-            //工作台循环任务
-            if (AccessConfig.INSTANCE.getHAD_SHOW_MAIN()) {
-                AccessConfig.INSTANCE.loopRun(3_000, 3, new Function0<Unit>() {
-                    @Override
-                    public Unit invoke() {
-                        clickDeskTop(event);
-                        return null;
-                    }
-                });
-            }
-
-            List<AccessibilityNodeInfo> cardNodes = getRootInActiveWindow().findAccessibilityNodeInfosByViewId("com.alibaba.android.rimet:id/h5_pc_container");
-            if (!cardNodes.isEmpty()) {
-                Log.e(Config.DEBUG_TAG, "工作台cardNodes：" + cardNodes.size());
-                AccessibilityNodeInfo nodeInfo = cardNodes.get(0);
-                if (nodeInfo != null) {
-                    for (int i = 0; i < nodeInfo.getChildCount(); i++) {
-                        AccessibilityNodeInfo child = nodeInfo.getChild(i);
-                        Log.w(Config.DEBUG_TAG, "工作台 child = " + child.toString());
-                        if ("com.uc.webview.export.WebView".equals(child.getClassName())) {
-                            if (mShareUtil == null) return;
-                            int delay = mShareUtil.getInt(Config.KEY_DELAY, 15000);
-                            //工作台页面
-                            AccessConfig.INSTANCE.loopRun(5_000, 3, new Function0<Unit>() {
-                                @Override
-                                public Unit invoke() {
-                                    Log.d(Config.DEBUG_TAG, "点击打卡item");
-                                    accessibilityHelper.click(mShareUtil.getInt(Config.KEY_ITEM_X, 140), mShareUtil.getInt(Config.KEY_ITEM_Y, 1094));
-                                    return null;
-                                }
-                            });
-
-                            ThreadUtils.runOnUiThreadDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    AccessConfig.INSTANCE.loopRun(5_000, 3, new Function0<Unit>() {
-                                        @Override
-                                        public Unit invoke() {
-                                            Log.d(Config.DEBUG_TAG, "点击打卡card");
-                                            accessibilityHelper.click(mShareUtil.getInt(Config.KEY_CARD_X, 568),
-                                                    mShareUtil.getInt(Config.KEY_CARD_Y, 1450));
-                                            return null;
-                                        }
-                                    });
-                                }
-                            }, delay);
-                            break;
-                        }
-                    }
-                } else {
-                    Log.d(Config.DEBUG_TAG, "alipayPolicy = null");
-                }
-            }
-//            }
         }
     }
 
+    private void clickTable(int delay) {
+        ThreadUtils.runOnUiThreadDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //点击工作台
+                accessibilityHelper.click(mShareUtil.getInt(Config.KEY_TABLE_X, 140), mShareUtil.getInt(Config.KEY_TABLE_Y, 1094));
+                Log.e(Config.DEBUG_TAG, "点击工作台");
+                //点击item
+                clickItem(delay);
+            }
+        }, delay);
+    }
+
+    private void clickItem(int delay) {
+        ThreadUtils.runOnUiThreadDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //点击工作台
+                accessibilityHelper.click(mShareUtil.getInt(Config.KEY_ITEM_X, 140), mShareUtil.getInt(Config.KEY_ITEM_Y, 1094));
+                Log.e(Config.DEBUG_TAG, "点击打卡item");
+                clickDing(delay);
+            }
+        }, delay);
+    }
+
+    private void clickDing(int delay) {
+        ThreadUtils.runOnUiThreadDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //点击工作台
+                accessibilityHelper.click(mShareUtil.getInt(Config.KEY_CARD_X, 140), mShareUtil.getInt(Config.KEY_CARD_Y, 1094));
+                Log.e(Config.DEBUG_TAG, "点击打卡");
+            }
+        }, delay);
+    }
+
     private void clickDeskTop(AccessibilityEvent event) {
-        if (!getRootInActiveWindow().findAccessibilityNodeInfosByText("工作台").isEmpty() && !mHadWork) {
+        if (!getRootInActiveWindow().findAccessibilityNodeInfosByText("工作台").isEmpty()) {
             Log.w(Config.DEBUG_TAG, "进入工作台");
             if (event.getSource() == null) {
                 return;
@@ -313,7 +297,49 @@ public class AccessibilityServiceMonitor extends AccessibilityService {
                     Log.w(Config.DEBUG_TAG, "工作台不可点击");
                     nodeWork.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 }
-                mHadWork = true;
+            }
+        }
+    }
+
+    private void clickLast(int delay) {
+        if (getRootInActiveWindow() == null) return;
+        List<AccessibilityNodeInfo> cardNodes = getRootInActiveWindow().findAccessibilityNodeInfosByViewId("com.alibaba.android.rimet:id/h5_pc_container");
+        if (!cardNodes.isEmpty()) {
+            Log.e(Config.DEBUG_TAG, "工作台cardNodes：" + cardNodes.size());
+            AccessibilityNodeInfo nodeInfo = cardNodes.get(0);
+            if (nodeInfo != null) {
+                for (int i = 0; i < nodeInfo.getChildCount(); i++) {
+                    AccessibilityNodeInfo child = nodeInfo.getChild(i);
+                    Log.w(Config.DEBUG_TAG, "工作台 child = " + child.toString());
+                    if ("com.uc.webview.export.WebView".contentEquals(child.getClassName())) {
+                        //工作台页面
+                        ThreadUtils.runOnUiThreadDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.d(Config.DEBUG_TAG, "点击打卡item");
+                                accessibilityHelper.click(mShareUtil.getInt(Config.KEY_ITEM_X, 140), mShareUtil.getInt(Config.KEY_ITEM_Y, 1094));
+
+                                ThreadUtils.runOnUiThreadDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        AccessConfig.INSTANCE.loopRun(5_000, 3, new Function0<Unit>() {
+                                            @Override
+                                            public Unit invoke() {
+                                                Log.d(Config.DEBUG_TAG, "点击打卡card");
+                                                accessibilityHelper.click(mShareUtil.getInt(Config.KEY_CARD_X, 568),
+                                                        mShareUtil.getInt(Config.KEY_CARD_Y, 1450));
+                                                return null;
+                                            }
+                                        });
+                                    }
+                                }, delay);
+                            }
+                        }, delay);
+                        break;
+                    }
+                }
+            } else {
+                Log.d(Config.DEBUG_TAG, "alipayPolicy = null");
             }
         }
     }
