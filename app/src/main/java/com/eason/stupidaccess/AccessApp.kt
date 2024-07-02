@@ -12,6 +12,7 @@ import com.eason.stupidaccess.util.AccessibilitUtil
 import com.eason.stupidaccess.util.AlarmTaskUtil
 import com.eason.stupidaccess.util.Config
 import com.eason.stupidaccess.util.ShareUtil
+import kotlin.system.exitProcess
 
 
 class AccessApp : MultiDexApplication() {
@@ -36,9 +37,10 @@ class AccessApp : MultiDexApplication() {
             }
             val hour: Int = mShareUtil.getInt(Config.KEY_HOUR, 7)
             val minute: Int = mShareUtil.getInt(Config.KEY_MINUTE, 0)
+            val day: Int = mShareUtil.getInt(Config.KEY_DAY, 0)
             val intent = Intent(mContext, AccessibilityServiceMonitor::class.java)
             intent.action = AccessibilityServiceMonitor.ACTION_ALAM_TIMER
-            AlarmTaskUtil.starRepeatAlarmTaskByService(mContext, hour, minute, 0, intent)
+            AlarmTaskUtil.starRepeatAlarmTaskByService(mContext, hour, minute, day, 0, intent)
         }
 
 
@@ -66,6 +68,11 @@ class AccessApp : MultiDexApplication() {
             // 屏幕锁定
             keyguardLock.reenableKeyguard()
             keyguardLock.disableKeyguard() // 解锁
+        }
+
+
+        fun exitApp() {
+            exitProcess(0)
         }
     }
 

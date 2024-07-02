@@ -3,6 +3,7 @@ package com.eason.stupidaccess.activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -45,6 +46,8 @@ public class TaskActivity extends AppCompatActivity implements View.OnClickListe
     private EditText etCardY;
     private EditText etPwd;
     private EditText etDelay;
+
+    private EditText etDay;
 
     public static int SERVICE_STATUS_ON = 100;
 
@@ -92,6 +95,7 @@ public class TaskActivity extends AppCompatActivity implements View.OnClickListe
         etCardY = findViewById(R.id.et_card_y);
         etPwd = findViewById(R.id.et_pwd);
         etDelay = findViewById(R.id.et_delay);
+        etDay = findViewById(R.id.et_day);
     }
 
     private void initVaule() {
@@ -108,6 +112,7 @@ public class TaskActivity extends AppCompatActivity implements View.OnClickListe
         etCardY.setText(String.valueOf(mShareUtil.getInt(Config.KEY_CARD_Y, 0)));
         etPwd.setText(mShareUtil.getString(Config.KEY_PWD, ""));
         etDelay.setText(String.valueOf(mShareUtil.getInt(Config.KEY_DELAY, 0)));
+        etDay.setText(String.valueOf(mShareUtil.getInt(Config.KEY_DAY, 0)));
     }
 
     private void initListener() {
@@ -171,6 +176,7 @@ public class TaskActivity extends AppCompatActivity implements View.OnClickListe
 
         int hour = mShareUtil.getInt(Config.KEY_HOUR, -1);
         int minute = mShareUtil.getInt(Config.KEY_MINUTE, -1);
+        int day = mShareUtil.getInt(Config.KEY_DAY, -1);
 
         if (hour == -1 && minute == -1) {
             // do nothing
@@ -217,7 +223,9 @@ public class TaskActivity extends AppCompatActivity implements View.OnClickListe
         if (mShareUtil != null) {
             mShareUtil.setShare(Config.KEY_HOUR, hourOfDay);
             mShareUtil.setShare(Config.KEY_MINUTE, minute);
-
+            if (!TextUtils.isEmpty(etDay.getText().toString())) {
+                mShareUtil.setShare(Config.KEY_DAY, Integer.parseInt(etDay.getText().toString()));
+            }
             AccessApp.Companion.startAlarmTask(TaskActivity.this);
         }
     }

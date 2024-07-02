@@ -34,10 +34,24 @@
 
         </TimePicker>
 
+        <EditText
+            android:id="@+id/et_day"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/base_dp_10"
+            android:paddingVertical="@dimen/base_dp_10"
+            android:layout_weight="1"
+            android:background="@drawable/shape_666666_cnr_8"
+            android:paddingHorizontal="@dimen/base_dp_10"
+            android:hint="请输入日期"
+            android:inputType="number"
+            android:textSize="@dimen/base_dp_13" />
+
         <Switch
             android:id="@+id/sw_alipay_forest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/base_dp_20"
             android:layout_marginStart="8dp"
             android:text="@string/alipay_forest_title" />
 

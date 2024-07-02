@@ -35,7 +35,7 @@ public class AlarmTaskUtil {
      * @param context
      * @param intent
      */
-    public static void starRepeatAlarmTaskByService(Context context, int hour, int minute, long intervalMillis, Intent intent) {
+    public static void starRepeatAlarmTaskByService(Context context, int hour, int minute,int day, long intervalMillis, Intent intent) {
         AlarmManager mAlarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         Calendar calendar = Calendar.getInstance(Locale.getDefault());
@@ -43,8 +43,10 @@ public class AlarmTaskUtil {
         calendar.set(Calendar.MINUTE, minute);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
+        calendar.set(Calendar.DAY_OF_MONTH, day);
         if (System.currentTimeMillis() > calendar.getTimeInMillis()) {
-            calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + 1);
+//            calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + 1);
+            calendar.set(Calendar.DAY_OF_MONTH, day + 1);
         }
 
         long triggerAtMillis = calendar.getTimeInMillis();

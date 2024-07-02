@@ -23,6 +23,7 @@ import com.eason.stupidaccess.AccessApp;
 import com.eason.stupidaccess.AccessConfig;
 import com.eason.stupidaccess.activity.TaskActivity;
 import com.eason.stupidaccess.util.AccessibilityHelper;
+import com.eason.stupidaccess.util.AppUtil;
 import com.eason.stupidaccess.util.Config;
 import com.eason.stupidaccess.util.DateTimeUtil;
 import com.eason.stupidaccess.util.LiveDataBus;
@@ -118,6 +119,7 @@ public class AccessibilityServiceMonitor extends AccessibilityService {
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
+        Log.d(TAG, "onServiceConnected");
         AccessibilityServiceInfo serviceInfo = new AccessibilityServiceInfo();
         serviceInfo.eventTypes = AccessibilityEvent.TYPES_ALL_MASK;
         serviceInfo.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
@@ -131,13 +133,19 @@ public class AccessibilityServiceMonitor extends AccessibilityService {
     }
 
     @Override
-    public void onAccessibilityEvent(AccessibilityEvent event) {
-        Log.e(Config.TAG, "onAccessibilityEvent：" + event);
+    public void onAccessibilityEvent(AccessibilityEvent event) {Log.e(Config.TAG, "onAccessibilityEvent：" + event);
+        Log.d(TAG, "onAccessibilityEvent");
         if (event == null) return;
         if (event.getPackageName() == null) {
+            Log.e(Config.DEBUG_TAG, "packageName is null");
             return;
         }
         if (event.getClassName() == null) {
+            Log.e(Config.DEBUG_TAG, "className is null");
+            return;
+        }
+        if (event.getSource() == null) {
+            Log.e(Config.DEBUG_TAG, "source is null");
             return;
         }
         int eventType = event.getEventType();
@@ -277,6 +285,9 @@ public class AccessibilityServiceMonitor extends AccessibilityService {
                 //点击工作台
                 accessibilityHelper.click(mShareUtil.getInt(Config.KEY_CARD_X, 140), mShareUtil.getInt(Config.KEY_CARD_Y, 1094));
                 Log.e(Config.DEBUG_TAG, "点击打卡");
+                mHadChecked = false;
+//                AccessApp.Companion.exitApp();
+//                AppUtil.forceStopPackage(getApplicationContext(), "com.alibaba.android.rimet");
             }
         }, delay);
     }

@@ -18,6 +18,8 @@ public class Config {
 
     public static final String KEY_MINUTE = "key_minute";
 
+    public static final String KEY_DAY = "key_day";
+
     public static final String KEY_PWD = "key_pwd";
 
     public static final String KEY_ITEM_X = "key_item_x";
